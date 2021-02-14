@@ -1,10 +1,14 @@
+/*
+QR コード決済の統一規格である JPQR の仕様に適合した利用者提示型 (CPM) の QR コードに関連するパッケージです。
+ただし、これは規格を策定、公表する団体が認める公式なものではありません。利用者の責任においてご利用ください。
+*/
 package jpqrcpm
 
 import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-//"errors"
+
 	//	"log"
 	"strconv"
 	"unicode/utf8"
@@ -19,8 +23,9 @@ const (
 	TagOtherTemplate                 = "99"
 )
 
+// 1 つの JPQR を表します。
 type JPQR1 struct {
-	PayloadFormatIndicator string              // 85: ペイメント・フォーマット識別子
+	PayloadFormatIndicator string   // 85: ペイメント・フォーマット識別子
 	ApplicationTemplate    template // 61: アプリケーションテンプレート
 }
 
@@ -30,11 +35,13 @@ type template struct {
 	OtherTemplate        string // 99: 自由領域
 }
 
+// 指定されたパラメータを持つ JPQR を生成します。
 func NewJPQR1(adfName, equivalent, other string) JPQR1 {
 	t := template{ADFName: adfName, Track2EquivalentData: equivalent, OtherTemplate: other}
 	return JPQR1{ApplicationTemplate: t}
 }
 
+// Base64 エンコードされた JPQR を返却します。
 func (q *JPQR1) Encode() (string, error) {
 	s := format(IDPayloadFormatIndicator, toHex("JPQR1"))
 
